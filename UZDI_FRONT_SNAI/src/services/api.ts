@@ -24,7 +24,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !isLogin) {
       localStorage.removeItem('uzdi_token')
       localStorage.removeItem('uzdi_user')
-      window.location.href = '/login'
+      window.location.href = import.meta.env.VITE_ROUTER_MODE === 'hash'
+        ? `${import.meta.env.BASE_URL}#/login`
+        : '/login'
     }
     return Promise.reject(error)
   }

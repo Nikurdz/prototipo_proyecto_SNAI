@@ -18,9 +18,28 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: UZDI_FRONT_SNAI/package-lock.json
+      - name: Compilar UZDI_FRONT_SNAI (modo demostración)
+        working-directory: UZDI_FRONT_SNAI
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/app/
+          VITE_USE_MOCK: 'true'
+          VITE_ROUTER_MODE: hash
+        run: |
+          npm ci
+          npm run build
+      - name: Armar el sitio (prototipo en la raíz, frontend Vue en /app)
+        run: |
+          mkdir site
+          cp -r prototipo/. site/
+          cp -r UZDI_FRONT_SNAI/dist site/app
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: prototipo
+          path: site
       - id: deployment
         uses: actions/deploy-pages@v4

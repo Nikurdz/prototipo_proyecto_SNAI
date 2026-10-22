@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import LoginView        from '../views/LoginView.vue'
 import AppShell         from '../layouts/AppShell.vue'
 import DashboardView    from '../views/DashboardView.vue'
@@ -13,7 +13,10 @@ import ParametrosView   from '../views/ParametrosView.vue'
 import { ROUTE_MIN_LEVEL, levelFor } from './access'
 
 const router = createRouter({
-  history: createWebHistory(),
+  // Con VITE_ROUTER_MODE=hash (GitHub Pages) las rutas van tras «#», sin configuración de servidor.
+  history: import.meta.env.VITE_ROUTER_MODE === 'hash'
+    ? createWebHashHistory(import.meta.env.BASE_URL)
+    : createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/login' },
     { path: '/login', component: LoginView },
